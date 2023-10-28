@@ -1,24 +1,25 @@
 // File: c:/bsd/rigel/sort/C7/ComparisonCountingp.c
-// Date: Thu Sep 12 19:43:32 2019
+// Date: Sat Oct 28 11:26:16 2023
 // (C) OntoOO/ Dennis de Champeaux
 
 /*
 How to use this driver:
 Compile with: 
-     gcc ComparisonCountingp.c
      gcc -O2 ComparisonCountingp.c  <==
-     gcc -O3 ComparisonCountingp.c
 Execute with: ./a.exe
 
 The main function contains lines with the calls of the different 
 algorithms.
+Use siz to set the array size to be used.
 The procedure fillarray allows to generate arrays of different sizes 
-with different content.
+with different content.  
+Validation functions are at the end.  They compare a version against  
+the trusted version cut2 
 */
 
-/* 
-Counting timings but not comparisons.
-*/
+
+// Counting timings but NOT comparisons.
+
 
 #include <stdio.h>
 #include <stddef.h>
@@ -100,7 +101,7 @@ int main (int argc, char *argv[]) {
   // cc("cut4   ", cut4, compareXY, 1, 0);
   // cc("c7     ", cut7, compareXY, 1, 0);
      // multi threaded versions; last argument is the # threads
-  int nt = 2;
+  int nt = 2; // thread count; if =1 then sequential version
   cc("c2p    ", c2p, compareXY, 1, nt);
   cc("c4p    ", c4p, compareXY, 1, nt);
   cc("c7p    ", c7p, compareXY, 1, nt);
