@@ -13,6 +13,7 @@ static void cut4c();
 void cut4(void **A, int lo, int hi, int (*compareXY)()) {
   // printf("cut4 %d %d \n", lo, hi);
   int L = hi - lo; 
+  if ( L <= 0 ) return;
 
   if ( L < cut4Limit ) {
     // cut2k2(A, lo, hi, compareXY);

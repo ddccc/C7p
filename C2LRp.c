@@ -13,6 +13,7 @@ void cut2lrpc(void **A, int lo, int hi,
 
 void cut2lrp(void **A, int lo, int hi, int (*compare)()) { 
   int L = hi - lo;
+  if ( L <= 0 ) return;
   int depthLimit = 2.9 * floor(log(L));
   if ( L < cut2LRLimit ) { 
     dflgm3(A, lo, hi, depthLimit, compare);

@@ -17,6 +17,7 @@ void cut4np(void **A, void **hip, int depthLimit, int (*compareXY)());
 
 
 void cut4n(void **A, int lo, int hi, int (*compareXY)()) {
+  if ( hi <= lo ) return;
     int size = hi-lo+1;
     int depthLimit = 1 + 2.5 * floor(log(size));
     cut4np(A+lo, A+hi, depthLimit, compareXY);
@@ -36,12 +37,12 @@ void cut4np(void **A, void **hip, int depthLimit, int (*compareXY)()) {
   int size;
 
   while (1) {
+	size = hip - A + 1;
         // while( (size = hip - A + 1) >= CUT4NMIN ) {
         if (depthLimit-- <= 0) {
             heapc(A, 0, size-1, compareXY);
             return;
         }
-	size = hip - A + 1;
 	if ( size < CUT4NMIN ) {
 	  // cut2(A, 0, hip-A, compareXY);
 	  // cut2lr(A, 0, hip-A, compareXY);

@@ -22,6 +22,7 @@ void dflgm3();
 void dflgm0(void **A, int lo, int hi, int (*compareXY)(const void*, const void*)) {
     // printf("dflgm0 %d %d %d\n", lo, hi, hi-lo);
   int L = hi - lo;
+  if ( L <= 0 ) return;
   int depthLimit = 1 + 2.9 * floor(log(L));
   dflgm3(A, lo, hi, depthLimit, compareXY);
 }

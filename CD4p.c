@@ -8,19 +8,20 @@
 // static const int cut4dLimit = 1600; 
 
 void cut4dc();
-void cut4dcp();
+void cut4dpc();
 // cut4d is doing 4-partitioning using 3 pivots
 void cut4dp(void **A, int N, int M, int (*compareXY)()) {
   // printf("cut4d %d %d \n", N, M);
   int L = M - N; 
+  if ( L <= 0 ) return;
   int depthLimit = 1 + 2.9 * floor(log(L));
-  cut4dcp(A, N, M, depthLimit, compareXY);
-} // end cut4d
+  cut4dpc(A, N, M, depthLimit, compareXY);
+} // end cut4dp
 
-void cut4dcp(void **A, int N, int M, int depthLimit, int (*compareXY)()) {
+void cut4dpc(void **A, int N, int M, int depthLimit, int (*compareXY)()) {
   int L;
  Start:
-  // printf("cut4dcp %d %d \n", N, M);
+  // printf("cut4dpc %d %d \n", N, M);
   L = M - N +1; 
 
   if ( depthLimit <= 0 ) {
@@ -73,7 +74,7 @@ void cut4dcp(void **A, int N, int M, int depthLimit, int (*compareXY)()) {
        compareXY(minr, A[M1]) == 0 ||
        compareXY(maxl, A[N1]) == 0 ) {
     // no good pivots available, thus escape
-    dflgm(A, N, M, middlex, cut4dcp, depthLimit, compareXY);
+    dflgm(A, N, M, middlex, cut4dpc, depthLimit, compareXY);
     return;
   }
 
@@ -329,7 +330,7 @@ void cut4dcp(void **A, int N, int M, int depthLimit, int (*compareXY)()) {
      N = z+1; M = j-1; goto Start;
    }
 
-} // end cut4dcp
+} // end cut4dpc
 
 #undef iswap
 

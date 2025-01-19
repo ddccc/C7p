@@ -66,7 +66,7 @@ void addTaskSynchronized();
 
 // */ 
 // threads execute sortThread
-void cut4dcp(); 
+void cut4dpc(); 
 void *sortThreadd4(void *AAA) { // AAA is not used
   // int taskCnt = 0;
   //  printf("Thread number: %ld #sleepers %d\n", 
@@ -94,7 +94,7 @@ void *sortThreadd4(void *AAA) { // AAA is not used
     int (*compare)() = getXY(t);
     free(t);
     // taskCnt++;
-    cut4dcp(A, n, m, depthLimit, compare); 
+    cut4dpc(A, n, m, depthLimit, compare); 
   }
   //  printf("Exit of Thread number: %ld taskCnt: %d\n", pthread_self(), taskCnt);
   return NULL;

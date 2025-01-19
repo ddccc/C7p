@@ -13,6 +13,7 @@ void cut4dc();
 void cut4d(void **A, int N, int M, int (*compareXY)()) {
   // printf("cut4d %d %d \n", N, M);
   int L = M - N; 
+  if ( L <= 0 ) return;
   int depthLimit = 1 + 2.9 * floor(log(L));
   cut4dc(A, N, M, depthLimit, compareXY);
 } // end cut4d

@@ -5,18 +5,19 @@
 #define iswap(p, q, A) { void *t3t = A[p]; A[p] = A[q]; A[q] = t3t; }
 
 // static int cut4Limit4 = 500; // transition to 1-pivot
-int cut4Limit4 = 1024; // transition to 1-pivot
+static int cut4Limit4 = 1024*200; // transition to 1-pivot
 
 void cut4Pc();
 // cut4P is doing 4-partitioning using 3 pivots
 void cut4P(void **A, int lo, int hi, int (*compare)()) {
   // printf("cut4P %d %d \n", lo, hi);
   int L = hi - lo; 
+  if ( L <= 0 ) return;
   // cut4Pc(lo, hi, 0); return; // for testing heapsort
   int depthLimit = 2.9 * floor(log(L));
   if ( L < cut4Limit4 ) {
     // quicksort0(A, lo, hi, compare); 
-    cut4c(A, lo, hi, depthLimit, compare);
+    cut2c(A, lo, hi, depthLimit, compare);
     return; 
   }
   cut4Pc(A, lo, hi, depthLimit, compare);
@@ -27,7 +28,7 @@ void cut4Pc(void **A, int lo, int hi, int depthLimit, int (*compareXY)()) {
   // printf("cut4Pc %d %d  %d\n", lo, hi, depthLimit);
   int L = hi - lo + 1; 
   if ( L <= 1 ) return;
-  if ( L < 2048 ) {
+  if ( L < cut4Limit4 ) {
     // quicksort0c(A, lo, hi, depthLimit, compareXY); 
     // d4c(A, lo, hi, depthLimit, compareXY); 
     // cut2c(A, lo, hi, depthLimit, compareXY); 
@@ -47,7 +48,35 @@ void cut4Pc(void **A, int lo, int hi, int depthLimit, int (*compareXY)()) {
   register int i, j, lw, up, z; // indices
   i = lo; j = hi;
   z = middlex = lo + (L>>1); // lo + L/2
-
+  /*
+        Obsolete because of the size of cut4Limit
+  const int small = 900; 
+  if ( L < small ) { // use 5 elements for sampling
+    int e1, e2, e3, e4, e5;
+    e1 = maxlx = lo; e5 = minrx = hi; mrx = middlex+1;
+    e3 = middlex;
+    int quartSegmentLng = L >> 2; // L/4
+    e2 = e3 - quartSegmentLng;
+    e4 = e3 + quartSegmentLng;
+    void *ae1 = A[e1], *ae2 = A[e2], *ae3 = A[e3], *ae4 = A[e4], *ae5 = A[e5];
+    void *t;
+    // if (ae1 > ae2) { t = ae1; ae1 = ae2; ae2 = t; }
+    if ( 0 < compareXY(ae1, ae2) ) { t = ae1; ae1 = ae2; ae2 = t; } // 1-2
+    if ( 0 < compareXY(ae4, ae5) ) { t = ae4; ae4 = ae5; ae5 = t; } // 4-5
+    if ( 0 < compareXY(ae1, ae3) ) { t = ae1; ae1 = ae3; ae3 = t; } // 1-3
+    if ( 0 < compareXY(ae2, ae3) ) { t = ae2; ae2 = ae3; ae3 = t; } // 2-3
+    if ( 0 < compareXY(ae1, ae4) ) { t = ae1; ae1 = ae4; ae4 = t; } // 1-4
+    if ( 0 < compareXY(ae3, ae4) ) { t = ae3; ae3 = ae4; ae4 = t; } // 3-4
+    if ( 0 < compareXY(ae2, ae5) ) { t = ae2; ae2 = ae5; ae5 = t; } // 2-5
+    if ( 0 < compareXY(ae2, ae3) ) { t = ae2; ae2 = ae3; ae3 = t; } // 2-3
+    if ( 0 < compareXY(ae4, ae5) ) { t = ae4; ae4 = ae5; ae5 = t; } // 4-5
+    // ... and reassign
+    A[e1] = ae1; A[e2] = ae2; A[e3] = ae3; A[e4] = ae4; A[e5] = ae5;
+    iswap(mrx, e4, A);
+    lw = z-1; up = mrx+1;
+  } else { // small <= L
+    int probeLng = sqrt(5.6);
+  */
     int probeLng = sqrt(L/3.0);
     int halfSegmentLng = probeLng >> 1; // probeLng/2;
     int quartSegmentLng = probeLng >> 2; // probeLng/4;
@@ -590,6 +619,17 @@ void cut4Pc(void **A, int lo, int hi, int depthLimit, int (*compareXY)()) {
 	  lo     i           z            j     hi
 	 */
 	if ( z-lo < hi-z ) {
+	  /*
+	  cut4P(lo, i);
+	  cut4P(i+1, z);
+	  if ( j-z < hi-j ) {
+	    cut4P(z+1, j-1);
+	    cut4P(j, hi);
+	    return;
+	  }
+	  cut4P(j, hi);
+	  cut4P(z+1, j-1);
+	  */
 	  if ( j-z < hi-j ) {
 	    // cut4P(z+1, j-1);
 	    // cut4P(j, hi);
@@ -607,11 +647,14 @@ void cut4Pc(void **A, int lo, int hi, int depthLimit, int (*compareXY)()) {
 	  hi = i;
 	  goto Start;
 	}
+	// hi-z <= z-lo
+	//cut4P(z+1, j-1);
+	// cut4P(j, hi);
 	if ( i-lo < z-i ) {
 	  // cut4P(lo, i);
 	  // cut4P(i+1, z);
-	  addTaskSynchronized(ll, newTask(A, i+1, z, depthLimit, compareXY));
 	  addTaskSynchronized(ll, newTask(A, lo, i, depthLimit, compareXY));
+	  addTaskSynchronized(ll, newTask(A, i+1, z, depthLimit, compareXY));
 	} else {
 	  // cut4P(i+1, z);
 	  // cut4P(lo, i);

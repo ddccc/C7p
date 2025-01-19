@@ -17,6 +17,7 @@ void cut2c(); // is called also
 void cut2(void **A, int lo, int hi, int (*compare)()) { 
   // printf("cut2 %d %d %d\n", lo, hi, hi-lo);
   int L = hi - lo;
+  if ( L <= 0 ) return;
   int depthLimit = 2.9 * floor(log(L));
   cut2c(A, lo, hi, depthLimit, compare);
 } // end cut2
